@@ -1,5 +1,5 @@
 {
-  "name": "@vux/loader-cli4",
+  "name": "vux-loader-cli4",
   "version": "1.0.0",
   "description": "extended loader for vux",
   "main": "src/index.js",
