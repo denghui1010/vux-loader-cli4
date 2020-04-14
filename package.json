@@ -33,9 +33,10 @@
     "debug": "node --inspect-brk=9229 ./node_modules/webpack/bin/webpack"
   },
   "dependencies": {
-    "@babel/core": "^7.4.3",
+    "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "acorn": "^5.1.2",
+    "ajv": "^6.12.0",
     "babel-plugin-transform-imports": "^1.5.1",
     "compare-versions": "^3.1.0",
     "cssnano": "^3.7.4",
@@ -62,7 +63,7 @@
     "coffee-script": "^1.12.2",
     "css-loader": "^0.26.1",
     "expose-loader": "^0.7.1",
-    "extract-text-webpack-plugin": "^2.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^0.9.0",
     "hash-sum": "^1.0.2",
     "jsdom": "^9.9.1",
