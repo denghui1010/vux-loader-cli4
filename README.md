@@ -16,7 +16,7 @@ vue.config.js
 
 ```Javascript
 module.exports = {
-	  configureWebpack: (config) => {
+    configureWebpack: (config) => {
         require("vux-loader-cli4").merge(config, {
             plugins: ["vux-ui"],
         });
