@@ -15,12 +15,12 @@ module.exports = function (source) {
   
   this.cacheable()
   const _this = this
-  const vuxConfig = this.vux || utils.getLoaderConfig(this, 'vux')
+  const vuxConfig = this.vux || utils.getOptions(this, 'vux')['vux']
  
   // 打包时无法获取选项，默认为使用 vux ui
   if (/}\s+from(.*?)('|")vux/.test(source)) {
     
-    const maps = this.vuxMaps || utils.getLoaderConfig(this, 'vuxMaps')
+    const maps = this.vuxMaps || utils.getOptions(this, 'vuxMaps')['vuxMaps']
     source = parser(source, function (opts) {
       let str = ''
       opts.components.forEach(function (component) {

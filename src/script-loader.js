@@ -11,7 +11,7 @@ const parser = require('./libs/import-parser')
 module.exports = function (source) {
   this.cacheable()
   const _this = this
-  let config = this.vux || utils.getLoaderConfig(this, 'vux')
+  let config = this.vux || utils.getOptions(this, 'vux')['vux']
 
   // no config found when using thread-loader
   if (this['thread-loader']) {
@@ -45,7 +45,7 @@ module.exports = function (source) {
   }
 
   if (config.options.useVuxUI && /}\s+from(.*?)('|")vux/.test(source)) {
-    const maps = this.vuxMaps || utils.getLoaderConfig(this, 'vuxMaps')
+    const maps = _this.vuxMaps || utils.getOptions(_this, 'vuxMaps')['vuxMaps']
     source = parser(source, function (opts) {
       let str = ''
       opts.components.forEach(function (component) {

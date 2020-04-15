@@ -39,7 +39,7 @@ function DonePlugin(callbacks) {
 
 DonePlugin.prototype.apply = function (compiler) {
   let callbacks = this.callbacks
-  compiler.hooks.done.tap('@vux/loader', function () {
+  compiler.hooks.done.tap('vux-loader-cli4', function () {
     callbacks.forEach(function (fn) {
       fn()
     })
@@ -53,7 +53,7 @@ function EmitPlugin(callback) {
 
 EmitPlugin.prototype.apply = function (compiler) {
   let callback = this.callback
-  compiler.hooks.emit.tapAsync("@vux/loader", function (compilation, cb) {
+  compiler.hooks.emit.tapAsync("vux-loader-cli4", function (compilation, cb) {
     callback(compilation, cb)
   });
 }
@@ -73,28 +73,6 @@ function getFirstPlugin(name, list) {
 }
 
 module.exports.merge = function (oldConfig, vuxConfig) {
-
-  oldConfig.module.rules.push({
-    resourceQuery: /^\?vue&type=template/,
-    enforce: 'pre',
-    loader: path.resolve(__dirname, './template-loader')
-  })
-
-  oldConfig.module.rules.push({
-    resourceQuery: /\.js/,
-    loader: path.resolve(__dirname, './js-loader')
-  })
-
-  oldConfig.module.rules.push({
-    resourceQuery: /^\?vue&type=script/,
-    enforce: 'pre',
-    loader: path.resolve(__dirname, './script-loader')
-  })
-
-  oldConfig.module.rules.push({
-    resourceQuery: /blockType=i18n/,
-    loader: path.resolve(__dirname, './i18n-loader')
-  })
 
   let variables = {}
 
@@ -318,23 +296,26 @@ module.exports.merge = function (oldConfig, vuxConfig) {
     config.plugins.push(new ProgressBarPlugin(pluginConfig.options || {}))
   }
 
+  let vuxMaps = {};
   if (hasPlugin('vux-ui', vuxConfig.plugins)) {
     let mapPath = path.resolve(vuxConfig.options.projectRoot, 'node_modules/vux/src/components/map.json')
     if (vuxConfig.options.vuxDev) {
       mapPath = path.resolve(vuxConfig.options.projectRoot, 'src/components/map.json')
     }
     const maps = require(mapPath)
+    vuxMaps = maps;
     if (isWebpack2) {
       config.plugins.push(new webpack.LoaderOptionsPlugin({
-        vuxMaps: maps
+          vuxMaps: vuxMaps
       }))
     } else {
       config = merge(config, {
-        vuxMaps: maps
+        vuxMaps: vuxMaps
       })
     }
   }
 
+  let vuxVariableMap = {};
   // get less variable alias
   if (hasPlugin('vux-ui', vuxConfig.plugins)) {
     let variablePath = path.resolve(vuxConfig.options.projectRoot, 'node_modules/vux/src/styles/variable.less')
@@ -355,13 +336,15 @@ module.exports.merge = function (oldConfig, vuxConfig) {
       })
     } catch (e) {}
 
+    vuxVariableMap = rs;
+
     if (isWebpack2) {
       config.plugins.push(new webpack.LoaderOptionsPlugin({
-        vuxVariableMap: rs
+        vuxVariableMap: vuxVariableMap
       }))
     } else {
       config = merge(config, {
-        vuxVariableMap: rs
+        vuxVariableMap: vuxVariableMap
       })
     }
   }
@@ -369,6 +352,7 @@ module.exports.merge = function (oldConfig, vuxConfig) {
   /**
    * ======== read vux locales and set globally ========
    */
+  let vuxLocales = {};
   if (hasPlugin('vux-ui', vuxConfig.plugins)) {
     let vuxLocalesPath = path.resolve(vuxConfig.options.projectRoot, 'node_modules/vux/src/locales/all.yml')
     if (vuxConfig.options.vuxDev) {
@@ -377,14 +361,15 @@ module.exports.merge = function (oldConfig, vuxConfig) {
     try {
       const vuxLocalesContent = fs.readFileSync(vuxLocalesPath, 'utf-8')
       let vuxLocalesJson = yaml.safeLoad(vuxLocalesContent)
+      vuxLocales = vuxLocalesJson;
 
       if (isWebpack2) {
         config.plugins.push(new webpack.LoaderOptionsPlugin({
-          vuxLocales: vuxLocalesJson
+          vuxLocales: vuxLocales
         }))
       } else {
         config = merge(config, {
-          vuxLocales: vuxLocalesJson
+          vuxLocales: vuxLocales
         })
       }
     } catch (e) {}
@@ -575,6 +560,32 @@ module.exports.merge = function (oldConfig, vuxConfig) {
   // save to file so it can be read when using thread-loader
   const cacheFile = require.resolve('vux').replace('index.js', '.config.cache.json')
   fs.writeFileSync(cacheFile, JSON.stringify(vuxConfig, null, 2))
+
+  oldConfig.module.rules.push({
+    resourceQuery: /^\?vue&type=template/,
+    enforce: 'pre',
+    loader: path.resolve(__dirname, './template-loader'),
+    options: {vux: vuxConfig, vuxMaps, vuxLocales, vuxVariableMap}
+  })
+
+  oldConfig.module.rules.push({
+    resourceQuery: /\.js/,
+    loader: path.resolve(__dirname, './js-loader'),
+    options: {vux: vuxConfig, vuxMaps, vuxLocales, vuxVariableMap}
+  })
+
+  oldConfig.module.rules.push({
+    resourceQuery: /^\?vue&type=script/,
+    enforce: 'pre',
+    loader: path.resolve(__dirname, './script-loader'),
+    options: {vux: vuxConfig, vuxMaps, vuxLocales, vuxVariableMap}
+  })
+
+  oldConfig.module.rules.push({
+    resourceQuery: /blockType=i18n/,
+    loader: path.resolve(__dirname, './i18n-loader'),
+    options: {vux: vuxConfig, vuxMaps, vuxLocales, vuxVariableMap}
+  })
 
 
   oldConfig = merge(oldConfig, config)

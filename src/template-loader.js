@@ -23,8 +23,8 @@ const getName = function (path) {
 module.exports = function (source) {
   const _this = this
   this.cacheable()
-  const query = this.query ? utils.parseQuery(this.query) : {}
-  let config = this.vux || utils.getLoaderConfig(this, 'vux')
+  // const query = this.query ? utils.parseQuery(this.query) : {}
+  let config = this.vux || utils.getOptions(this, 'vux')['vux']
 
   if (this['thread-loader']) {
     const configFile = require.resolve('vux/.config.cache.json')
@@ -55,7 +55,7 @@ module.exports = function (source) {
     source = reserveTagCode(source, 'v-no-ssr')
   }
 
-  const locales = this.vuxLocales || utils.getLoaderConfig(this, 'vuxLocales')
+  const locales = this.vuxLocales || utils.getOptions(this, 'vuxLocales')['vuxLocales']
 
   /**
    * ======== i18n ========

@@ -5,7 +5,7 @@ const utils = require('loader-utils')
 module.exports = function (source) {
   this.cacheable()
   const _this = this
-  let config = this.vux || utils.getLoaderConfig(this, 'vux')
+  let config = this.vux || utils.getOptions(this, 'vux')['vux']
 
   if (this['thread-loader']) {
     const configFile = require.resolve('vux/.config.cache.json')
