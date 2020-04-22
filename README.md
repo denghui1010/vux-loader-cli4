@@ -4,7 +4,7 @@
 
 ### 说明
 
-基于 [vux](https://github.com/airyland/vux) 的 [@vux/loader](https://www.npmjs.com/package/@vux/loader)@2.0.0-rc4 修改而来, 可以在 vue-cli@4.x 中正常工作
+基于 [vux](https://github.com/airyland/vux) 的 [@vux/loader](https://www.npmjs.com/package/@vux/loader)@2.0.0-rc4 修改而来, 可以在 [@vue/cli-service](https://www.npmjs.com/package/@vue/cli-service)@4.x 中正常工作
 
 ### 安装
 ```npm install vux-loader-cli4 --save-dev```
