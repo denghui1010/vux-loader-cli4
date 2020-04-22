@@ -1,6 +1,6 @@
 # vux-loader-cli4
 
-[![npm][npm]][npm-url]
+[![npm]][npm-url] [![download]][npm-url]
 
 ### 说明
 
@@ -27,3 +27,4 @@ module.exports = {
 
 [npm]: https://img.shields.io/npm/v/vux-loader-cli4.svg
 [npm-url]: https://www.npmjs.com/package/vux-loader-cli4
+[download]: https://img.shields.io/npm/dw/vux-loader-cli4
